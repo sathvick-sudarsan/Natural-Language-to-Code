@@ -4,8 +4,8 @@ This project aims to translate English text into Python code using a Seq2Seq mod
 
 ## Project Structure
 
-- `app.py`: Main application file to run the Streamlit app.
-- `app_seq2seq.py`: Core application logic for handling Seq2Seq model interactions.
+- `app.py`: Main application file to run the Streamlit app for the transformers model.
+- `app_seq2seq.py`: Application file to run the Streamlit app for the baseline seq2seq model.
 - `baseline_seq2seq.py`: Defines a baseline Seq2Seq model.
 - `evaluate.py`: Contains functions for evaluating the model’s performance.
 - `transformer_model.py`: Implementation of the Transformer model.
