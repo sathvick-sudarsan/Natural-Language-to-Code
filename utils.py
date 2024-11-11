@@ -19,16 +19,7 @@ def load_data():
     return data
 
 def load_data_from_csv(csv_file_path):
-    """
-    Loads data from a CSV file into a pandas DataFrame.
-    
-    Args:
-    - csv_file_path: str, path to the CSV file containing the data
-    
-    Returns:
-    - data: pandas DataFrame containing the loaded data
-    """
-    # Load the dataset from the CSV file
+   
     data = pd.read_csv(csv_file_path)
     
     return data
