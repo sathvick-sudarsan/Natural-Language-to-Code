@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from utils import load_data, preprocess_data
+from utils import load_data, preprocess_data, load_data_from_csv
 from nltk.tokenize import word_tokenize
 import nltk
 import pickle
@@ -18,7 +18,8 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 # Load and preprocess data
-data = load_data()
+data = load_data_from_csv('/Users/vineeth/Desktop/Rutgers/Semester 3/NLP/Project/mbpp_conala.csv')
+
 train_df, val_df, test_df = preprocess_data(data)
 
 # Build vocabulary
