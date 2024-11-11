@@ -110,6 +110,8 @@ test_dataset = Seq2SeqDataset(test_df, input_vocab, output_vocab)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+# Loading the test data set 
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 # Define the Attention mechanism
 class Attention(nn.Module):
@@ -308,6 +310,10 @@ for epoch in range(epochs):
 
     print(f'Train Loss: {train_loss:.4f}')
     print(f'Validation Loss: {val_loss:.4f}')
+
+# Evaluvating the test dataset
+test_loss = eval_epoch(model, test_loader, criterion, device)
+print(f'Test Loss: {test_loss:.4f}')
 
 # Save the model
 torch.save(model.state_dict(), 'seq2seq_model.pth')
