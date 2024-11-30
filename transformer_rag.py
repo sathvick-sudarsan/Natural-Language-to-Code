@@ -10,7 +10,7 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 from sentence_transformers.util import pytorch_cos_sim
 
-## KNOWLEDGE BASE CONSTRUCTION
+## KNOWLEDGE BASE CONSTRUCTIO
 
 # Loading from the 600k code csv files.
 knowledge_base_df = pd.read_csv("path_to_your_knowledge_base.csv")
