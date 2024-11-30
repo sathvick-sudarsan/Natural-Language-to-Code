@@ -97,9 +97,11 @@ def train_epoch(model, data_loader, optimizer, device):
 
     return total_loss / len(data_loader)
 
-def eval_epoch(model, data_loader, device):
+def eval_epoch(model, data_loader, tokenizer,device):
     model.eval()
     total_loss = 0
+    predictions = [] ## added to visualise output
+    references = []  ## added to visualise output 
 
     with torch.no_grad():
         for batch in tqdm(data_loader, desc="Evaluating"):
@@ -116,17 +118,37 @@ def eval_epoch(model, data_loader, device):
             loss = outputs.loss
             total_loss += loss.item()
 
-    return total_loss / len(data_loader)
+            ## ADDED THIS PART TO GENERATE PREDICTIONS  
+            generated_outputs = model.generate(input_ids=input_ids, attention_mask=attention_mask, max_length=256)
+            batch_predictions = tokenizer.batch_decode(generated_outputs, skip_special_tokens=True)
+            batch_references = tokenizer.batch_decode(labels, skip_special_tokens=True)
+            
+            predictions.extend(batch_predictions)
+            references.extend(batch_references)
+    ## PRINTING THE OUTPUTS     
+    for i in range(min(3, len(predictions)))):
+        print(f"Reference: {references[i]}")
+        print(f"Prediction: {predictions[i]}")
+        print("-" * 50)       
+
+    return total_loss / len(data_loader),predictions,references
 
 # Training loop
 epochs = 5
 for epoch in range(epochs):
     print(f'Epoch {epoch + 1}/{epochs}')
     train_loss = train_epoch(model, train_loader, optimizer, device)
-    val_loss = eval_epoch(model, val_loader, device)
+    val_loss, predictions, references = eval_epoch(model, val_loader,tokenizer, device)
 
     print(f'Train Loss: {train_loss:.4f}')
     print(f'Validation Loss: {val_loss:.4f}')
+
+   ## Save predictions and references for analysis (optional)[MOSTLY NO NEED]
+    #with open(f'epoch_{epoch+1}_predictions.txt', 'w') as pred_file, \
+         #open(f'epoch_{epoch+1}_references.txt', 'w') as ref_file:
+        #for p, r in zip(predictions, references):
+            #pred_file.write(p + '\n')
+            #ref_file.write(r + '\n')
 
 # Save the fine-tuned model
 model.save_pretrained('./finetuned_model')
