@@ -16,6 +16,12 @@ def load_data():
     
     return data
 
+def load_data_from_csv(csv_file_path):
+   
+    data = pd.read_csv(csv_file_path)
+    
+    return data
+
 def preprocess_data(data):
     # Drop duplicates and NaN values
     data.drop_duplicates(subset=['intent', 'snippet'], inplace=True)
