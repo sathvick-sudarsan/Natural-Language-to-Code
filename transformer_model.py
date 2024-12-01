@@ -3,14 +3,14 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AdamW
-from utils import load_data, preprocess_data
+from utils import load_data_from_csv, preprocess_data
 import logging
 
 # Suppress tokenizer warnings
 logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
 
 # Load and preprocess data
-data = load_data()
+data = load_data_from_csv('mbpp_conala.csv')
 train_df, val_df, test_df = preprocess_data(data)
 
 # Initialize tokenizer and model
@@ -22,7 +22,7 @@ model.to(device)
 # Dataset and DataLoader remain the same
 class CodeDataset(Dataset):
     def __init__(self, df, tokenizer, max_len=256):
-        self.df = df
+        self.df = df.reset_index(drop=True)
         self.tokenizer = tokenizer
         self.max_len = max_len
 
@@ -30,8 +30,8 @@ class CodeDataset(Dataset):
         return len(self.df)
 
     def __getitem__(self, index):
-        source_text = self.df.iloc[index]['intent']
-        target_text = self.df.iloc[index]['snippet']
+        source_text = str(self.df.iloc[index]['intent'])
+        target_text = str(self.df.iloc[index]['snippet'])
 
         source = "Translate to Python: " + source_text
 
@@ -131,5 +131,6 @@ for epoch in range(epochs):
 # Save the fine-tuned model
 model.save_pretrained('./finetuned_model')
 tokenizer.save_pretrained('./finetuned_model')
+
 
 
