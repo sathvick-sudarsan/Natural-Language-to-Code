@@ -50,8 +50,10 @@ class CodeDataset(Dataset):
             return_tensors='pt'
         )
 
-        labels = target_encoding['input_ids'].squeeze()
-        labels[labels == self.tokenizer.pad_token_id] = -100  # Ignore padding tokens in loss computation
+        #labels = target_encoding['input_ids'].squeeze()
+        #labels[labels == self.tokenizer.pad_token_id] = -100  # Ignore padding tokens in loss computation
+        labels = target_encoding['input_ids'].squeeze().long()  # Ensure labels are of type torch.long
+        labels[labels == self.tokenizer.pad_token_id] = -100 
 
         return {
             'input_ids': source_encoding['input_ids'].squeeze(),
@@ -121,12 +123,13 @@ def eval_epoch(model, data_loader, tokenizer,device):
             ## ADDED THIS PART TO GENERATE PREDICTIONS  
             generated_outputs = model.generate(input_ids=input_ids, attention_mask=attention_mask, max_length=256)
             batch_predictions = tokenizer.batch_decode(generated_outputs, skip_special_tokens=True)
+            labels[labels == -100] = tokenizer.pad_token_id  # Replace -100 with pad token ID
             batch_references = tokenizer.batch_decode(labels, skip_special_tokens=True)
             
             predictions.extend(batch_predictions)
             references.extend(batch_references)
     ## PRINTING THE OUTPUTS     
-    for i in range(min(3, len(predictions)))):
+    for i in range(min(3, len(predictions))):
         print(f"Reference: {references[i]}")
         print(f"Prediction: {predictions[i]}")
         print("-" * 50)       

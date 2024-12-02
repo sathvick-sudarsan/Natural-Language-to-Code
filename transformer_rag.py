@@ -7,7 +7,6 @@ from utils import load_data, preprocess_data
 import logging
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
-import torch
 from sentence_transformers.util import pytorch_cos_sim
 
 ## KNOWLEDGE BASE CONSTRUCTIO
