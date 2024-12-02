@@ -13,7 +13,7 @@ from sentence_transformers.util import pytorch_cos_sim
 ## KNOWLEDGE BASE CONSTRUCTIO
 
 # Loading from the 600k code csv files.
-knowledge_base_df = pd.read_csv("path_to_your_knowledge_base.csv")
+knowledge_base_df = pd.read_csv("600kdataset_table.csv")
 
 # Extracting the intents and snippets
 intents = knowledge_base_df['intent'].tolist()  # Problems in Python
@@ -55,12 +55,6 @@ def augment_query(query, retrieved_docs, max_len = 256):
     context = " ".join(retrieved_docs)
     truncated_context = context[:max_len - len(query) - len("Context: Query: ")] ## USE THIS IF THERE IS AN ISSUE WITH SIZE 
     return f"Context: {context} Query: {query}"
-
-
-
-
-
-
 
 
 # Suppress tokenizer warnings
