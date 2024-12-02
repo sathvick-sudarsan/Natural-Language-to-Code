@@ -9,6 +9,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 from sentence_transformers.util import pytorch_cos_sim
 
+
 ## KNOWLEDGE BASE CONSTRUCTIO
 
 # Loading from the 600k code csv files.
@@ -49,7 +50,8 @@ def retrieve_knowledge(query, kb_embeddings, intents, snippets, top_k=3):
 
 
 ## AUGMENT OUTPUT
-def augment_query(query, retrieved_docs):
+
+def augment_query(query, retrieved_docs, max_len = 256):
     context = " ".join(retrieved_docs)
     truncated_context = context[:max_len - len(query) - len("Context: Query: ")] ## USE THIS IF THERE IS AN ISSUE WITH SIZE 
     return f"Context: {context} Query: {query}"
@@ -90,9 +92,10 @@ class CodeDataset(Dataset):
 
         # Retrieve additional context
         retrieved_docs = retrieve_knowledge(source_text, kb_embeddings,intents,snippets)
-        augmented_source = augment_query(source_text, retrieved_docs)
+        # Check if you need to use source source_text instead of source
+        augmented_source = augment_query(source_text, retrieved_docs, max_len = self.max_len)
 
-        source = "Translate to Python: " + source_text
+        source = "Translate to Python: " + source_text 
 
         source_encoding = self.tokenizer(
             augmented_source,
@@ -109,12 +112,12 @@ class CodeDataset(Dataset):
             return_tensors='pt'
         )
 
-        labels = target_encoding['input_ids'].squeeze()
+        labels = target_encoding['input_ids'].squeeze(dim=0)
         labels[labels == self.tokenizer.pad_token_id] = -100  # Ignore padding tokens in loss computation
 
         return {
-            'input_ids': source_encoding['input_ids'].squeeze(),
-            'attention_mask': source_encoding['attention_mask'].squeeze(),
+            'input_ids': source_encoding['input_ids'].squeeze(dim=0),
+            'attention_mask': source_encoding['attention_mask'].squeeze(dim=0),
             'labels': labels,
         }
 
