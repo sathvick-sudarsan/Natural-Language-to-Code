@@ -32,7 +32,7 @@ from sentence_transformers.util import pytorch_cos_sim
 
 def retrieve_knowledge(query, kb_embeddings, intents, snippets, top_k=3):
     query_embedding = retrieval_model.encode(query, convert_to_tensor=True)
-    similarities = pytorch_cos_sim(query_embedding, kb_embeddings)
+    similarities = util.cos_sim(query_embedding, kb_embeddings) # Replaced pytorch_cos_sim
     top_k_indices = torch.topk(similarities, k=top_k).indices[0].tolist()
 
     # Retrieve intents and corresponding snippets
@@ -128,16 +128,25 @@ from tqdm import tqdm
 
 optimizer = AdamW(model.parameters(), lr=5e-5)
 
-def train_epoch(model, data_loader, optimizer, device):
+def train_epoch(model, data_loader, optimizer, device, log_retrieved_docs=True):
     model.train()
     total_loss = 0
 
-    for batch in tqdm(data_loader, desc="Training"):
+    for batch_idx, batch in enumerate(tqdm(data_loader, desc="Training")):
         optimizer.zero_grad()
 
         input_ids = batch['input_ids'].to(device)
         attention_mask = batch['attention_mask'].to(device)
         labels = batch['labels'].to(device)
+
+        if log_retrieved_docs:
+            source_texts = data_loader.dataset.df.iloc[batch_idx * data_loader.batch_size: (batch_idx + 1) * data_loader.batch_size
+            ]['intent'].tolist()
+        
+        for idx, source_text in enumerate(source_texts):
+            retrieved_docs = retrieve_knowledge(source_text, kb_embeddings, intents, snippets)
+            print(f"Batch {batch_idx}, Sample {idx}:\nQuery: {source_text}\nRetrieved Docs: {retrieved_docs}\n")
+
 
         outputs = model(
             input_ids=input_ids,
