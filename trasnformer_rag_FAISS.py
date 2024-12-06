@@ -24,7 +24,13 @@ kb_embeddings = retrieval_model.encode(intents, convert_to_tensor=True).cpu().nu
 dimension = kb_embeddings.shape[1]
 index = faiss.IndexFlatL2(dimension)
 index.add(kb_embeddings)
+
+# Save the FAISS  index
 faiss.write_index(index, "knowledge_base.index")
+
+
+# Loading the FAISS index
+index = faiss.read_index("knowledge_base.index")
 
 # **RETRIEVAL FUNCTION**
 def retrieve_knowledge_faiss(query, index, intents, snippets, top_k=3):
@@ -44,7 +50,7 @@ def retrieve_knowledge_faiss(query, index, intents, snippets, top_k=3):
 def augment_query(query, retrieved_docs, max_len=256):
     context = " ".join(retrieved_docs)
     truncated_context = context[:max_len - len(query) - len("Context: Query: ")]
-    return f"Context: {truncated_context} Query: {query}"
+    return f"Context: {context} Query: {query}"
 
 # **DATASET AND DATALOADER**
 class CodeDataset(Dataset):
