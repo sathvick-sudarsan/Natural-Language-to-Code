@@ -3,6 +3,7 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AdamW
 from sentence_transformers import SentenceTransformer
 import pandas as pd
+import numpy as np
 import faiss
 import logging
 from tqdm import tqdm
