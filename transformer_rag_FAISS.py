@@ -35,7 +35,7 @@ index = faiss.read_index("knowledge_base.index")
 # **RETRIEVAL FUNCTION**
 def retrieve_knowledge_faiss(query, index, intents, snippets, top_k=3):
     query_embedding = retrieval_model.encode(query, convert_to_tensor=True).cpu().numpy()
-    distances, indices = index.search(query_embedding, top_k)
+    distances, indices = index.search(query_embedding.reshape(1,-1), top_k) # Added shape to index.search
     
     retrieved_intents = [intents[i] for i in indices[0]]
     retrieved_snippets = [snippets[i] for i in indices[0]]
