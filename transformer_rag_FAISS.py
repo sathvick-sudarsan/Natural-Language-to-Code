@@ -27,7 +27,7 @@ retrieval_model = SentenceTransformer('all-mpnet-base-v2').to(
 logging.info("Creating embeddings for the knowledge base...")
 kb_embeddings = []
 batch_size = 64
-for i in tqdm(range(0, len(intents), batch_size), desc="Embedding KB"):
+for i in tqdm(range(0, len(intents), batch_size), desc="Embedding KB", disable = 'True'): ## To stop displaying the output at every step 
     batch_intents = intents[i:i + batch_size]
     batch_embeddings = retrieval_model.encode(batch_intents, convert_to_tensor=True).cpu().numpy()
     kb_embeddings.append(batch_embeddings)
@@ -120,11 +120,11 @@ model = AutoModelForSeq2SeqLM.from_pretrained('Salesforce/codet5-base').to(
 )
 
 # **CREATE DATASETS AND DATALOADERS**
-train_dataset = CodeDataset(train_df, tokenizer, index, intents, snippets)
+train_dataset = CodeDataset(train_df, tokenizer, index, intents, snippets) 
 val_dataset = CodeDataset(val_df, tokenizer, index, intents, snippets)
 test_dataset = CodeDataset(test_df, tokenizer, index, intents, snippets)
 
-train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)       
 val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
 
 # **TRAINING LOOP**
@@ -133,7 +133,7 @@ optimizer = AdamW(model.parameters(), lr=5e-5)
 def train_epoch(model, data_loader, optimizer, device):
     model.train()
     total_loss = 0
-    for batch in tqdm(data_loader, desc="Training"):
+    for batch in tqdm(data_loader, desc="Training",disable = True):
         optimizer.zero_grad()
         input_ids = batch['input_ids'].to(device)
         attention_mask = batch['attention_mask'].to(device)
@@ -151,7 +151,7 @@ def eval_epoch(model, data_loader, device):
     model.eval()
     total_loss = 0
     with torch.no_grad():
-        for batch in tqdm(data_loader, desc="Evaluating"):
+        for batch in tqdm(data_loader, desc="Evaluating",disable = True):
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
@@ -174,3 +174,6 @@ for epoch in range(epochs):
 # **SAVE THE FINE-TUNED MODEL**
 model.save_pretrained('./finetuned_model')
 tokenizer.save_pretrained('./finetuned_model')
+
+## changed the disable function for tqdm by adding disable = True 
+## Epochs changed to 2 

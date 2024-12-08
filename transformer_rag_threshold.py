@@ -1,4 +1,4 @@
-# Filename: transformer_model.py
+# TRANSFORMER RAG USING THRESHOLD BASED SELECTION OF K
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -30,22 +30,24 @@ kb_embeddings = retrieval_model.encode(intents, convert_to_tensor=True)
 
 from sentence_transformers.util import pytorch_cos_sim
 
-def retrieve_knowledge(query, kb_embeddings, intents, snippets, top_k=3):
+def retrieve_knowledge(query, kb_embeddings, intents, snippets, threshold=0.5):
     query_embedding = retrieval_model.encode(query, convert_to_tensor=True)
-    similarities = util.cos_sim(query_embedding, kb_embeddings) # Replaced pytorch_cos_sim
-    top_k_indices = torch.topk(similarities, k=top_k).indices[0].tolist()
-
-    # Retrieve intents and corresponding snippets
-    retrieved_intents = [intents[i] for i in top_k_indices]
-    retrieved_snippets = [snippets[i] for i in top_k_indices]
-
-    # Combine intents and snippets for context
+    similarities = util.cos_sim(query_embedding, kb_embeddings)
+    scores, indices = similarities.topk(k=kb_embeddings.size(0), largest=True)  # Sort by similarity
+    
+    # Filter results by threshold
+    filtered_indices = [idx for idx, score in zip(indices[0].tolist(), scores[0].tolist()) if score >= threshold]
+    
+    retrieved_intents = [intents[i] for i in filtered_indices]
+    retrieved_snippets = [snippets[i] for i in filtered_indices]
+    
     retrieved_contexts = [
         f"Problem: {intent} | Code: {snippet}"
         for intent, snippet in zip(retrieved_intents, retrieved_snippets)
     ]
-
+    
     return retrieved_contexts
+
 
 
 
