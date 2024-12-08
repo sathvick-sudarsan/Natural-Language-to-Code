@@ -3,7 +3,7 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AdamW
-from utils import load_data,load_data_from_csv,preprocess_data
+from utils import load_data, preprocess_data
 import logging
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
@@ -61,8 +61,7 @@ def augment_query(query, retrieved_docs, max_len = 256):
 logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
 
 # Load and preprocess data
-# data = load_data()
-data = load_data_from_csv('mbpp_conala.csv')
+data = load_data()
 train_df, val_df, test_df = preprocess_data(data)
 
 # Initialize tokenizer and model
@@ -140,13 +139,14 @@ def train_epoch(model, data_loader, optimizer, device, log_retrieved_docs=True):
         attention_mask = batch['attention_mask'].to(device)
         labels = batch['labels'].to(device)
 
-        if log_retrieved_docs:
-            source_texts = data_loader.dataset.df.iloc[batch_idx * data_loader.batch_size: (batch_idx + 1) * data_loader.batch_size
-            ]['intent'].tolist()
+        ## Uncomment if output needs to be printed at every stage.
+        #if log_retrieved_docs:
+        #    source_texts = data_loader.dataset.df.iloc[batch_idx * data_loader.batch_size: (batch_idx + 1) * data_loader.batch_size
+        #    ]['intent'].tolist()
         
-        for idx, source_text in enumerate(source_texts):
-            retrieved_docs = retrieve_knowledge(source_text, kb_embeddings, intents, snippets)
-            print(f"Batch {batch_idx}, Sample {idx}:\nQuery: {source_text}\nRetrieved Docs: {retrieved_docs}\n")
+        #for idx, source_text in enumerate(source_texts):
+        #    retrieved_docs = retrieve_knowledge(source_text, kb_embeddings, intents, snippets)
+        #    print(f"Batch {batch_idx}, Sample {idx}:\nQuery: {source_text}\nRetrieved Docs: {retrieved_docs}\n")
 
 
         outputs = model(
@@ -185,7 +185,7 @@ def eval_epoch(model, data_loader, device):
     return total_loss / len(data_loader)
 
 # Training loop
-epochs = 5
+epochs = 2
 for epoch in range(epochs):
     print(f'Epoch {epoch + 1}/{epochs}')
     train_loss = train_epoch(model, train_loader, optimizer, device)
@@ -198,4 +198,4 @@ for epoch in range(epochs):
 model.save_pretrained('./finetuned_model')
 tokenizer.save_pretrained('./finetuned_model')
 
-
+## changed the disable function for tqdm by adding disable = True 
