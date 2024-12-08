@@ -13,7 +13,7 @@ from sentence_transformers.util import pytorch_cos_sim
 ## KNOWLEDGE BASE CONSTRUCTIO
 
 # Loading from the 600k code csv files.
-knowledge_base_df = pd.read_csv("600kdataset_table.csv")
+knowledge_base_df = pd.read_csv("mbpp(formatted).csv")
 
 # Extracting the intents and snippets
 intents = knowledge_base_df['intent'].tolist()  # Problems in Python
