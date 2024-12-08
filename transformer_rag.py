@@ -3,7 +3,7 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AdamW
-from utils import load_data, preprocess_data
+from utils import load_data,load_data_from_csv,preprocess_data
 import logging
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
@@ -61,7 +61,8 @@ def augment_query(query, retrieved_docs, max_len = 256):
 logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
 
 # Load and preprocess data
-data = load_data()
+# data = load_data()
+data = load_data_from_csv('mbpp_conala.csv')
 train_df, val_df, test_df = preprocess_data(data)
 
 # Initialize tokenizer and model
