@@ -13,7 +13,7 @@ from sentence_transformers.util import pytorch_cos_sim
 ## KNOWLEDGE BASE CONSTRUCTIO
 
 # Loading from the 600k code csv files.
-knowledge_base_df = pd.read_csv("mbpp(formatted).csv")
+knowledge_base_df = pd.read_csv("3.7k_python_dataset_renamed.csv")
 
 # Extracting the intents and snippets
 intents = knowledge_base_df['intent'].tolist()  # Problems in Python
@@ -199,3 +199,5 @@ model.save_pretrained('./finetuned_model')
 tokenizer.save_pretrained('./finetuned_model')
 
 ## changed the disable function for tqdm by adding disable = True 
+## Commit 4 : Changed the RAG dataset to MBPP (Gave higher losses compared to 600k)
+## Commit 5 : Changed RAG dataset to new python dataset 
