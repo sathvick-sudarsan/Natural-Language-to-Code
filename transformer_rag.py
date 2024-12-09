@@ -13,11 +13,11 @@ from sentence_transformers.util import pytorch_cos_sim
 ## KNOWLEDGE BASE CONSTRUCTIO
 
 # Loading from the 600k code csv files.
-knowledge_base_df = pd.read_csv("3.7k_python_dataset_renamed.csv")
+knowledge_base_df = pd.read_csv("3.7k_python dataset.csv")
 
-# Extracting the intents and snippets
-intents = knowledge_base_df['intent'].tolist()  # Problems in Python
-snippets = knowledge_base_df['snippet'].tolist()
+# Extracting the intents and snippets ## CHANGED INTENT AND SNIPPET TO THE CSV FILE 
+intents = knowledge_base_df['Problem'].tolist()  # Problems in Python
+snippets = knowledge_base_df['Python Code'].tolist()
 
 # Initialize a dense retrieval model
 retrieval_model = SentenceTransformer('all-mpnet-base-v2')
@@ -201,3 +201,5 @@ tokenizer.save_pretrained('./finetuned_model')
 ## changed the disable function for tqdm by adding disable = True 
 ## Commit 4 : Changed the RAG dataset to MBPP (Gave higher losses compared to 600k)
 ## Commit 5 : Changed RAG dataset to new python dataset 
+## Commit 6 : The other RAG dataset had some issue because of some formatting issue,
+            ## So using the downloaded data set with diff row names
