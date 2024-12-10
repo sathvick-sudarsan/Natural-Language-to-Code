@@ -37,3 +37,17 @@ def preprocess_data(data):
     val_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42)
 
     return train_df.reset_index(drop=True), val_df.reset_index(drop=True), test_df.reset_index(drop=True)
+
+def preprocess_data_new(data):
+    # Drop duplicates and NaN values
+    data.drop_duplicates(subset=['Problem', 'Python Code'], inplace=True)
+    data.dropna(subset=['Problem', 'Python Code'], inplace=True)
+
+    # Reset index
+    data.reset_index(drop=True, inplace=True)
+
+    # Train-validation-test split
+    train_df, temp_df = train_test_split(data, test_size=0.2, random_state=42)
+    val_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42)
+
+    return train_df.reset_index(drop=True), val_df.reset_index(drop=True), test_df.reset_index(drop=True)
