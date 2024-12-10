@@ -8,6 +8,7 @@ import logging
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 from sentence_transformers.util import pytorch_cos_sim
+import random 
 
 
 ## KNOWLEDGE BASE CONSTRUCTIO
@@ -126,7 +127,7 @@ val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
 # Training loop
 from tqdm import tqdm
 
-optimizer = AdamW(model.parameters(), lr=5e-5)
+optimizer = AdamW(model.parameters(), lr=20e-5)
 
 def train_epoch(model, data_loader, optimizer, device, log_retrieved_docs=True):
     model.train()
@@ -185,7 +186,7 @@ def eval_epoch(model, data_loader, device):
     return total_loss / len(data_loader)
 
 # Training loop
-epochs = 2
+epochs = 4
 for epoch in range(epochs):
     print(f'Epoch {epoch + 1}/{epochs}')
     train_loss = train_epoch(model, train_loader, optimizer, device)
@@ -193,6 +194,47 @@ for epoch in range(epochs):
 
     print(f'Train Loss: {train_loss:.4f}')
     print(f'Validation Loss: {val_loss:.4f}')
+
+
+def generate_code_from_random_queries(model, tokenizer, kb_embeddings, intents, snippets, test_df, device, top_k=3):
+    # Select two random queries from the test dataset (or any other source)
+    query = "Python Program to Find the Fibonacci Series without Using Recursion"
+    random_queries = random.sample(test_df['intent'].tolist(), 2)  # Assuming 'intent' column contains the queries
+    
+    # Add your predefined query as the last item
+    random_queries.append(query)
+    
+    for query in random_queries:
+        print(f"Query: {query}")
+        
+        # Step 1: Retrieve relevant code snippets for the query
+        retrieved_docs = retrieve_knowledge(query, kb_embeddings, intents, snippets, top_k=top_k)
+        
+        # Step 2: Augment the query with the retrieved context
+        augmented_query = augment_query(query, retrieved_docs)
+        
+        # Step 3: Tokenize the augmented query
+        encoding = tokenizer(augmented_query, return_tensors='pt', padding=True, truncation=True, max_length=256).to(device)
+        
+        # Step 4: Pass the tokenized input through the fine-tuned model to generate code
+        with torch.no_grad():
+            output = model.generate(input_ids=encoding['input_ids'], attention_mask=encoding['attention_mask'], max_length=256)
+        
+        # Step 5: Decode the output into readable Python code
+        decoded_output = tokenizer.decode(output[0], skip_special_tokens=True)
+        
+        # Print the generated code
+        print(f"Retrieved docs: \n")
+        for doc in retrieved_docs:
+          print(f"- {doc}")
+        print(f"Generated Python Code: {decoded_output}")
+        print("-" * 80)
+
+# Example usage: generate code from two random queries in the test set + one custom query
+generate_code_from_random_queries(model, tokenizer, kb_embeddings, intents, snippets, test_df, device)
+
+
+
 
 # Save the fine-tuned model
 model.save_pretrained('./finetuned_model')
