@@ -12,8 +12,8 @@ logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR
 
 # Load and preprocess data
 # data = load_data()
-data = load_data_from_csv('3.7K_python_dataset.csv')
-train_df, val_df, test_df = preprocess_data_new(data)
+data = load_data_from_csv('mbpp_conala.csv')
+train_df, val_df, test_df = preprocess_data(data)
 
 # Initialize tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained('Salesforce/codet5-base')
@@ -74,7 +74,7 @@ val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
 # Training loop
 from tqdm import tqdm
 
-optimizer = AdamW(model.parameters(), lr=5e-5)
+optimizer = AdamW(model.parameters(), lr=20e-5)
 
 def train_epoch(model, data_loader, optimizer, device):
     model.train()
