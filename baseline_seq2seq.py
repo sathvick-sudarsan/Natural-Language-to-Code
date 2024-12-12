@@ -5,12 +5,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from utils import load_data, preprocess_data
+from utils import load_data, preprocess_data, load_data_from_csv
 from nltk.tokenize import word_tokenize
 import nltk
 import pickle
 
-# Test 
 # Download necessary NLTK data
 nltk.download('punkt')
 
@@ -19,7 +18,8 @@ torch.manual_seed(42)
 np.random.seed(42)
 
 # Load and preprocess data
-data = load_data()
+data = load_data_from_csv('mbpp_conala.csv')
+
 train_df, val_df, test_df = preprocess_data(data)
 
 # Build vocabulary
@@ -46,7 +46,7 @@ def build_vocab(sentences, freq_threshold, special_tokens=None):
                 idx += 1
     return vocab
 
-freq_threshold = 2
+freq_threshold = 1
 special_tokens = ['<PAD>', '<UNK>', '<SOS>', '<EOS>']
 
 input_sentences = train_df['intent'].tolist()
@@ -110,6 +110,8 @@ test_dataset = Seq2SeqDataset(test_df, input_vocab, output_vocab)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+# Loading the test data set 
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
 # Define the Attention mechanism
 class Attention(nn.Module):
@@ -298,7 +300,7 @@ def eval_epoch(model, data_loader, criterion, device):
     return epoch_loss / len(data_loader)
 
 # Start training
-epochs = 20  # Increase the number of epochs for better training
+epochs = 10  # Increase the number of epochs for better training
 for epoch in range(epochs):
     print(f'Epoch {epoch + 1}/{epochs}')
     train_loss = train_epoch(model, train_loader, optimizer, criterion, device)
@@ -309,8 +311,15 @@ for epoch in range(epochs):
     print(f'Train Loss: {train_loss:.4f}')
     print(f'Validation Loss: {val_loss:.4f}')
 
+# Evaluvating the test dataset
+test_loss = eval_epoch(model, test_loader, criterion, device)
+print(f'Test Loss: {test_loss:.4f}')
+
 # Save the model
 torch.save(model.state_dict(), 'seq2seq_model.pth')
+
+
+
 
 
 
