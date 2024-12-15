@@ -73,7 +73,7 @@ val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False)
 # Training loop
 from tqdm import tqdm
 
-optimizer = AdamW(model.parameters(), lr=5e-5)
+optimizer = AdamW(model.parameters(), lr=20e-5)
 
 def train_epoch(model, data_loader, optimizer, device):
     model.train()
