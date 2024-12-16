@@ -132,7 +132,7 @@ def eval_epoch(model, data_loader, tokenizer, device):
 
     return total_loss / len(data_loader), predictions, references
 
-epochs = 5
+epochs = 4
 train_losses = []
 val_losses = []
 
