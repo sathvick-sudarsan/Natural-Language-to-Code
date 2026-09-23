@@ -2,7 +2,7 @@
 
 This repository began as a university project translating natural-language requests into Python code. The assignment called for an attention-based Seq2Seq model as the simpler baseline and a transformer/CodeT5 approach as the advanced model. Those experiments are preserved as historical work in [legacy/academic](legacy/academic/README.md) and on the original team branches.
 
-**Current status:** M0 provides a reproducible, leakage-safe data foundation. It does not contain a validated model benchmark, trained artifacts, or a supported app. Historical numerical results are not currently reproducible or resume-safe and should not be cited as validated performance.
+**Current status:** M0 provides a reproducible, leakage-safe data foundation. M1A adds local Seq2Seq training and evaluation infrastructure, but no measured M1 test result or trained artifact. Historical numerical results are not currently reproducible or resume-safe and should not be cited as validated performance.
 
 ## Install
 
@@ -37,6 +37,23 @@ pytest
 ```
 
 CI runs these checks, package imports, validation, and preparation on Python 3.12 for Windows and Ubuntu. No ML dependency or model download is needed after the development install.
+
+## M1A Seq2Seq infrastructure
+
+Install the separate `seq2seq` extra with `python -m pip install -e ".[dev,seq2seq]"`.
+After M0 preparation, run:
+
+```bash
+nl2code seq2seq train --data-dir artifacts/data/m0 --config configs/seq2seq/m1-baseline.json --run-dir artifacts/runs/seq2seq/m1-baseline-seed42
+nl2code seq2seq infer --checkpoint artifacts/runs/seq2seq/m1-baseline-seed42/best.pt --text "sort a list in reverse order"
+nl2code seq2seq predict --data-dir artifacts/data/m0 --checkpoint artifacts/runs/seq2seq/m1-baseline-seed42/best.pt --split validation --output artifacts/runs/seq2seq/validation.jsonl --metadata-output artifacts/runs/seq2seq/validation.meta.json
+nl2code evaluate --data-dir artifacts/data/m0 --split validation --predictions artifacts/runs/seq2seq/validation.jsonl --metadata artifacts/runs/seq2seq/validation.meta.json --output artifacts/runs/seq2seq/validation-results.json
+```
+
+See [Seq2Seq baseline](docs/seq2seq-baseline.md) for resume and trusted
+checkpoint rules and [evaluation protocol](docs/evaluation-protocol.md) for
+strict prediction files and multi-reference exact match. The CPU model checks
+run separately with `pytest -q tests_seq2seq`.
 
 ## Layout
 
