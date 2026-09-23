@@ -23,3 +23,13 @@ jobs:
       - run: python -c "import nl2code; import nl2code.cli; import nl2code.data.contract; import nl2code.data.normalize; import nl2code.data.split; import nl2code.data.prepare"
       - run: python -m nl2code data validate --input Data/mbpp_conala.csv
       - run: python -m nl2code data prepare --input Data/mbpp_conala.csv --output artifacts/data/ci --seed 42
+
+  seq2seq-cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e ".[dev,seq2seq]"
+      - run: pytest -q tests_seq2seq
