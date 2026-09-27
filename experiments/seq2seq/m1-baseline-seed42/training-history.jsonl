@@ -1,0 +1,10 @@
+{"epoch":1,"global_step":94,"training_token_nll":3.1316544796862447,"training_tokens":224040,"validation_token_nll":3.7573827713476775,"validation_tokens":32748}
+{"epoch":2,"global_step":188,"training_token_nll":2.790433048193124,"training_tokens":224040,"validation_token_nll":3.8242379767824564,"validation_tokens":32748}
+{"epoch":3,"global_step":282,"training_token_nll":2.6325786441420895,"training_tokens":224040,"validation_token_nll":3.7058126119462447,"validation_tokens":32748}
+{"epoch":4,"global_step":376,"training_token_nll":2.496035172159896,"training_tokens":224040,"validation_token_nll":3.8363455193112936,"validation_tokens":32748}
+{"epoch":5,"global_step":470,"training_token_nll":2.412941107318308,"training_tokens":224040,"validation_token_nll":3.8528828782244338,"validation_tokens":32748}
+{"epoch":6,"global_step":564,"training_token_nll":2.3132870876242104,"training_tokens":224040,"validation_token_nll":3.882844758351178,"validation_tokens":32748}
+{"epoch":7,"global_step":658,"training_token_nll":2.247845560328234,"training_tokens":224040,"validation_token_nll":4.054530726053404,"validation_tokens":32748}
+{"epoch":8,"global_step":752,"training_token_nll":2.1997406534373045,"training_tokens":224040,"validation_token_nll":4.031641155805317,"validation_tokens":32748}
+{"epoch":9,"global_step":846,"training_token_nll":2.146839206002904,"training_tokens":224040,"validation_token_nll":4.016567157071138,"validation_tokens":32748}
+{"epoch":10,"global_step":940,"training_token_nll":2.0794911577156285,"training_tokens":224040,"validation_token_nll":3.9773728205372274,"validation_tokens":32748}

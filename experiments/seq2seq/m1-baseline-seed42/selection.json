@@ -1,0 +1,1 @@
+{"best_epoch":3,"best_validation_token_nll":3.7058126119462447,"checkpoint":"best.pt","checkpoint_sha256":"26528846772cde09183555c6c5f6702e8028b1c33bd979c5bbe78f468c276308","selection_data":"validation only","selection_metric":"validation_token_nll"}

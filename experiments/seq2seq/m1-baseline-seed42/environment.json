@@ -1,0 +1,1 @@
+{"code_revision":"c6fa082e4ad487035eff4af9376a271209891268","cuda_available":false,"platform":"Windows-11-10.0.26200-SP0","preprocessing_stats":{"train":{"source_oov":0,"source_truncated":0,"target_oov":0,"target_truncated":2079},"validation":{"source_oov":158,"source_truncated":0,"target_oov":0,"target_truncated":667}},"python":"3.12.7","torch":"2.7.0+cpu"}
