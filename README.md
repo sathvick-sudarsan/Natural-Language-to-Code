@@ -2,7 +2,7 @@
 
 This repository began as a university project translating natural-language requests into Python code. The assignment called for an attention-based Seq2Seq model as the simpler baseline and a transformer/CodeT5 approach as the advanced model. Those experiments are preserved as historical work in [legacy/academic](legacy/academic/README.md) and on the original team branches.
 
-**Current status:** M0 provides a reproducible, leakage-safe data foundation. M1A adds local Seq2Seq training and evaluation infrastructure, but no measured M1 test result or trained artifact. Historical numerical results are not currently reproducible or resume-safe and should not be cited as validated performance.
+**Current status:** M0 provides a reproducible, leakage-safe data foundation. M1 adds local attention-Seq2Seq training and evaluation infrastructure and a measured Seq2Seq baseline: one fixed seed-42 run, scored on the held-out M0 test split. See the [experiment record](experiments/seq2seq/m1-baseline-seed42/), [Seq2Seq baseline](docs/seq2seq-baseline.md), and [evaluation protocol](docs/evaluation-protocol.md). Trained checkpoints are not committed. Historical numerical results are not currently reproducible or resume-safe and should not be cited as validated performance.
 
 ## Install
 
@@ -61,6 +61,7 @@ run separately with `pytest -q tests_seq2seq`.
 - `Data/`: tracked university-era CSV inputs; the directory name is preserved.
 - `tests/`: offline contract, determinism, leakage, import, and CLI checks.
 - `docs/data-provenance.md`: source uncertainty and versioned data policy.
+- `experiments/`: committed lightweight evidence for measured runs (no checkpoints).
 - `legacy/academic/`: preserved academic code, notebook, and old requirements.
 - `.github/workflows/ci.yml`: CPU-only validation on Windows and Ubuntu.
 
